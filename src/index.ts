@@ -17,7 +17,7 @@ client.on("message", (msg) => {
 });
 
 const start = async () => {
-    await connect("postgres");
+    await connect(process.env.DATABASE_URL || "");
 
     const repo = getUserRepository();
 

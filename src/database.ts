@@ -6,9 +6,7 @@ let connection: Connection;
 export const connect = async (database: string): Promise<void> => {
     connection = await createConnection({
         type: "postgres",
-        username: "postgres",
-        password: "docker",
-        database: database,
+        url: database,
         entities: [__dirname + "/data/*.ts"],
         synchronize: true,
     });
