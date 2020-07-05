@@ -4,6 +4,7 @@ import WebHookListener, {
     ConnectionAdapter,
     ReverseProxyAdapter,
     SimpleAdapter,
+    EnvPortAdapter,
 } from "twitch-webhooks";
 import twitch from "twitch";
 
@@ -20,9 +21,9 @@ const setup = async () => {
         twitchClientSecret
     );
 
-    const adapter = new SimpleAdapter({
+    const adapter = new EnvPortAdapter({
         hostName: "https://warchief-discord-bot.herokuapp.com/",
-        listenerPort: port,
+        ssl: false,
     });
     console.log("adapter", adapter);
 
