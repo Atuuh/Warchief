@@ -1,7 +1,11 @@
 require("dotenv").config();
 
-import WebHookListener from "twitch-webhooks";
+import WebHookListener, {
+    ConnectionAdapter,
+    ReverseProxyAdapter,
+} from "twitch-webhooks";
 import twitch from "twitch";
+import address from "address";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
@@ -16,17 +20,22 @@ const setup = async () => {
         twitchClientSecret
     );
 
-    const listener = await WebHookListener.create(twitchClient, {
-        port: port,
-        logger: { minLevel: "trace" },
-    });
+    const listener = new WebHookListener(
+        twitchClient,
+        new ReverseProxyAdapter({
+            hostName: address.ip(),
+            ssl: false,
+            port: 8090,
+            listenerPort: port,
+        })
+    );
     console.log("PORT", process.env.PORT);
 
     listener.listen();
     console.log("PORT", process.env.PORT);
 
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
-    console.log("atuuh", atuuh);
+    console.log("atuuh", atuuh?.id);
 
     const subscription = await listener.subscribeToFollowsFromUser(
         atuuh?.id || "",
