@@ -3,6 +3,7 @@ require("dotenv").config();
 import WebHookListener, {
     ConnectionAdapter,
     ReverseProxyAdapter,
+    SimpleAdapter,
 } from "twitch-webhooks";
 import twitch from "twitch";
 import address from "address";
@@ -20,20 +21,16 @@ const setup = async () => {
         twitchClientSecret
     );
 
-    const listener = new WebHookListener(
-        twitchClient,
-        new ReverseProxyAdapter({
-            hostName: address.ip(),
-            ssl: false,
-            port: 8090,
-            listenerPort: port,
-        }),
-        { logger: { minLevel: "trace" } }
-    );
-    console.log("PORT", process.env.PORT);
+    const adapter = new SimpleAdapter({
+        hostName: address.ip(),
+        listenerPort: port,
+    });
+    console.log("adapter", adapter);
+    const listener = new WebHookListener(twitchClient, adapter, {
+        logger: { minLevel: "trace" },
+    });
 
     listener.listen();
-    console.log("PORT", process.env.PORT);
 
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
     console.log("atuuh", atuuh?.id);
