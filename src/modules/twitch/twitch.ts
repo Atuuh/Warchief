@@ -1,7 +1,12 @@
 import { getTwitchAlertRepository } from "../../database";
 import { doesStreamExist } from "../../twitch";
-import { TwitchAlert, createTwitchAlert } from "../../data/twitchAlert";
+import {
+    TwitchAlert,
+    createTwitchAlert,
+    TwitchAlertRepository,
+} from "../../data/twitchAlert";
 import { createCommand } from "../../command";
+import { getCustomRepository } from "typeorm";
 
 export const twitchCommand = createCommand(
     "twitch",
@@ -10,7 +15,7 @@ export const twitchCommand = createCommand(
 
         const [subcommand, streamName] = params;
 
-        const alertRepo = await getTwitchAlertRepository();
+        const alertRepo = await getCustomRepository(TwitchAlertRepository);
 
         switch (subcommand) {
             case "add":
@@ -24,25 +29,17 @@ export const twitchCommand = createCommand(
                     return;
                 }
 
-                const existingAlert = await alertRepo.findOne({
-                    where: {
-                        streamerName: streamName,
-                        channelId: message.channel.id,
-                    },
-                });
-                if (existingAlert) {
+                const response = await alertRepo.add(
+                    streamName,
+                    message.channel.id
+                );
+
+                if (!response) {
                     await message.reply(
                         `Alert has already been setup for ${streamName}`
                     );
                     return;
                 }
-
-                const newAlert = createTwitchAlert(
-                    streamName,
-                    message.channel.id
-                );
-
-                await alertRepo.save(newAlert);
 
                 await message.reply(`Added twitch alert for ${streamName}`);
                 break;
@@ -50,11 +47,11 @@ export const twitchCommand = createCommand(
             case "remove":
                 if (!streamName) return;
 
-                const result = await alertRepo.delete({
-                    streamerName: streamName,
-                    channelId: message.channel.id,
-                });
-                if (result.affected) {
+                const result = await alertRepo.remove(
+                    streamName,
+                    message.channel.id
+                );
+                if (result) {
                     await message.reply(
                         `Deleted twitch alert for ${streamName}`
                     );
@@ -66,7 +63,7 @@ export const twitchCommand = createCommand(
                 break;
 
             case "list":
-                const alerts = await alertRepo.find();
+                const alerts = await alertRepo.list(message.channel.id);
                 await message.reply(
                     `The following streams have alerts set up: \n${alerts
                         .map((a) => a.streamerName)

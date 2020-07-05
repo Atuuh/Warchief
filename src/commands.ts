@@ -9,7 +9,7 @@ export const parseCommand = (message: Message) => {
 
     if (commandName.charAt(0) !== "!" || message.author.bot) return;
 
-    const commandd = commands.find((c) => c.name === commandName.slice(1));
+    const command = commands.find((c) => c.name === commandName.slice(1));
 
-    return () => commandd?.execute(params, { message });
+    return () => command?.execute(params, { message });
 };
