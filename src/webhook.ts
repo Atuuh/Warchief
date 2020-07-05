@@ -43,13 +43,11 @@ const setup = async () => {
         }
     );
 
-    await listener.unlisten();
+    await subscription.start();
 
-    var app = express();
-    app.post("/:id", (req, res) => {
-        console.log("Express request", req);
-    });
-    app.listen(port, () => console.log("Express is listening"));
+    subscription._verify();
+
+    console.log("SUBSCRIPTION", subscription);
 };
 
 setup();
