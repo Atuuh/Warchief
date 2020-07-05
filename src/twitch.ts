@@ -1,7 +1,5 @@
 import twitch, { HelixUser } from "twitch";
 import TwitchClient from "twitch";
-import WebHookListener from "twitch-webhooks";
-import { LogLevel } from "logger";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
