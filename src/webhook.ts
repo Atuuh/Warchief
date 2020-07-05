@@ -27,7 +27,8 @@ const setup = async () => {
             ssl: false,
             port: 8090,
             listenerPort: port,
-        })
+        }),
+        { logger: { minLevel: "trace" } }
     );
     console.log("PORT", process.env.PORT);
 
