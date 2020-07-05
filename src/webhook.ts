@@ -17,8 +17,7 @@ const setup = async () => {
     );
 
     const listener = await WebHookListener.create(twitchClient, {
-        port: 8090,
-        reverseProxy: { port: port, ssl: true },
+        port: port,
         logger: { minLevel: "trace" },
     });
     console.log("PORT", process.env.PORT);
