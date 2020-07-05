@@ -25,7 +25,7 @@ const setup = async () => {
     );
 
     const adapter = new EnvPortAdapter({
-        hostName: "warchief-discord-bot.herokuapp.com/",
+        hostName: "warchief-discord-bot.herokuapp.com",
         ssl: false,
     });
 
