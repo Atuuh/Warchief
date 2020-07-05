@@ -41,6 +41,8 @@ const setup = async () => {
             console.log(`Follow changed`, follow);
         }
     );
+
+    console.log("subscription", subscription);
 };
 
 setup();
