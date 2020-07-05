@@ -14,7 +14,7 @@ export const setup = async () => {
     );
 
     const listener = await WebHookListener.create(twitchClient, {
-        port: 8090,
+        port: Number(process.env.PORT) || 8090,
     });
     await listener.listen();
 
