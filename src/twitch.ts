@@ -14,9 +14,7 @@ export const setup = async () => {
     );
 
     const listener = await WebHookListener.create(twitchClient, {
-        hostName: "68884b3dc79a.ngrok.io",
         port: 8090,
-        reverseProxy: { port: 443, ssl: true },
     });
     await listener.listen();
 
