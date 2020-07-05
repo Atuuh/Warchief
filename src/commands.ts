@@ -5,11 +5,11 @@ import { twitchCommand } from "./modules/twitch/twitch";
 const commands = [pingCommand, twitchCommand];
 
 export const parseCommand = (message: Message) => {
-    const [command, ...params] = message.content.split(" ");
+    const [commandName, ...params] = message.content.split(/ +/);
 
-    if (command.charAt(0) !== "!") return;
+    if (commandName.charAt(0) !== "!" || message.author.bot) return;
 
-    const commandd = commands.find((c) => c.name === command.slice(1));
+    const commandd = commands.find((c) => c.name === commandName.slice(1));
 
     return () => commandd?.execute(params, { message });
 };

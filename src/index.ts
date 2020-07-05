@@ -12,6 +12,7 @@ client.on("ready", () => {
 });
 
 client.on("message", async (msg) => {
+    if (msg.author.bot || msg.channel.type === "dm") return;
     const command = parseCommand(msg);
     if (command) command();
 });
