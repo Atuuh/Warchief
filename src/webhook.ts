@@ -42,8 +42,6 @@ const setup = async () => {
             console.log(`Follow changed`, follow);
         }
     );
-
-    listener.unlisten();
 };
 
 setup();
