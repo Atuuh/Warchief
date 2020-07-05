@@ -30,7 +30,9 @@ const setup = async () => {
         logger: { minLevel: "trace" },
     });
 
-    listener.listen();
+    await listener.listen();
+
+    console.log("listener", listener);
 
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
     console.log("atuuh", atuuh?.id);
