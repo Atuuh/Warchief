@@ -14,6 +14,8 @@ const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
 
 console.log("PORT", process.env.PORT);
 
+import http from "http";
+
 const setup = async () => {
     const port = Number(process.env.PORT);
 
@@ -40,6 +42,8 @@ const setup = async () => {
             console.log(`Follow changed`, follow);
         }
     );
+
+    await listener.unlisten();
 
     var app = express();
     app.post("/:id", (req, res) => {
