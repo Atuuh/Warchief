@@ -33,8 +33,6 @@ const setup = async () => {
         logger: { minLevel: "trace" },
     });
 
-    await listener.listen();
-
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
 
     const subscription = await listener.subscribeToFollowsFromUser(
@@ -44,7 +42,17 @@ const setup = async () => {
         }
     );
 
-    console.log("SUBSCRIPTION", subscription["server"]);
+    const app = express();
+
+    listener.applyMiddleware(app);
+
+    app.listen();
+
+    app.use((req, res) => {
+        console.log("EXPRESS", req);
+    });
+
+    console.log("SUBSCRIPTION", subscription["_client"]["_server"]);
 };
 
 setup();
