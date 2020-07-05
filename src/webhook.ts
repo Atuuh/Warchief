@@ -28,8 +28,6 @@ const setup = async () => {
 
     listener.listen();
 
-    twitchClient.helix.subscriptions;
-
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
 
     const subscription = await listener.subscribeToFollowsFromUser(
