@@ -21,9 +21,8 @@ const setup = async () => {
         twitchClientSecret
     );
 
-    const adapter = new SimpleAdapter({
+    const adapter = new EnvPortAdapter({
         hostName: "https://warchief-discord-bot.herokuapp.com/",
-        listenerPort: 80,
     });
     console.log("adapter", adapter);
 
