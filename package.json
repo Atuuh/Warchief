@@ -4,9 +4,9 @@
     "description": "A discord bot",
     "scripts": {
         "start": "ts-node ./src/index.ts",
-        "start:prod": "npm run tsc && node build/index.js",
+        "start:prod": "node build/index.js",
         "build": "rimraf ./build && tsc",
-        "tsc": "tsc"
+        "postinstall": "npm run build"
     },
     "repository": {
         "type": "git",
