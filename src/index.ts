@@ -7,7 +7,7 @@ import { setup } from "./twitch";
 
 const client = new discord.Client();
 
-client.on("ready", () => {
+client.once("ready", () => {
     console.log(`Logged in as ${client.user?.tag}`);
 });
 
