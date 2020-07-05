@@ -1,10 +1,5 @@
-import { getTwitchAlertRepository } from "../../database";
 import { doesStreamExist } from "../../twitch";
-import {
-    TwitchAlert,
-    createTwitchAlert,
-    TwitchAlertRepository,
-} from "../../data/twitchAlert";
+import { TwitchAlertRepository } from "../../data/twitchAlert";
 import { createCommand } from "../../command";
 import { getCustomRepository } from "typeorm";
 
