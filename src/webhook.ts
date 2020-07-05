@@ -46,7 +46,7 @@ const setup = async () => {
 
     listener.applyMiddleware(app);
 
-    app.listen();
+    listener.listen();
 
     app.use((req, res) => {
         console.log("EXPRESS", req);
