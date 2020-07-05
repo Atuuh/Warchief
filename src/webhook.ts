@@ -25,19 +25,14 @@ const setup = async () => {
     const adapter = new EnvPortAdapter({
         hostName: "https://warchief-discord-bot.herokuapp.com/",
     });
-    console.log("adapter", adapter);
 
     const listener = new WebHookListener(twitchClient, adapter, {
         logger: { minLevel: "trace" },
     });
 
-    // await listener.listen();
-
-    console.log("listener", listener);
-    console.log(listener["_server"]);
+    await listener.listen();
 
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
-    console.log("atuuh", atuuh?.id);
 
     const subscription = await listener.subscribeToFollowsFromUser(
         atuuh?.id || "",
@@ -46,15 +41,11 @@ const setup = async () => {
         }
     );
 
-    console.log("subscription", subscription);
-
     var app = express();
     app.post("/:id", (req, res) => {
         console.log("Express request", req);
     });
-    app.listen(Number(process.env.PORT), () =>
-        console.log("Express is listening")
-    );
+    app.listen(port, () => console.log("Express is listening"));
 };
 
 setup();
