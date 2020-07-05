@@ -33,6 +33,7 @@ const setup = async () => {
     await listener.listen();
 
     console.log("listener", listener);
+    console.log(listener["_server"]);
 
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
     console.log("atuuh", atuuh?.id);
