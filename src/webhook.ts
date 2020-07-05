@@ -32,6 +32,8 @@ const setup = async () => {
         logger: { minLevel: "trace" },
     });
 
+    listener.listen();
+
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
 
     const subscription = await listener.subscribeToFollowsFromUser(
