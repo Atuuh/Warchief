@@ -3,6 +3,7 @@ require("dotenv").config();
 import discord from "discord.js";
 import { connect } from "./database";
 import { parseCommand } from "./commands";
+import { setup } from "./twitch";
 
 const client = new discord.Client();
 
@@ -20,6 +21,8 @@ const start = async () => {
     await connect(process.env.DATABASE_URL || "");
 
     await client.login(process.env.DISCORD_BOT_TOKEN);
+
+    await setup();
 };
 
 start();

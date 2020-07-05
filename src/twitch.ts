@@ -1,19 +1,35 @@
-import twitch, { HelixUser, AccessToken } from "twitch";
+import twitch, { HelixUser } from "twitch";
 import TwitchClient from "twitch";
+import WebHookListener from "twitch-webhooks";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
 
 let twitchClient: TwitchClient;
 
-const setup = async () => {
+export const setup = async () => {
     twitchClient = await twitch.withClientCredentials(
         twitchClientId,
         twitchClientSecret
     );
-};
 
-setup();
+    const listener = await WebHookListener.create(twitchClient, {
+        hostName: "68884b3dc79a.ngrok.io",
+        port: 8090,
+        reverseProxy: { port: 443, ssl: true },
+    });
+    await listener.listen();
+
+    const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
+    console.log("atuuh", atuuh);
+
+    const subscription = await listener.subscribeToFollowsFromUser(
+        atuuh?.id || "",
+        async (follow) => {
+            console.log(`Follow changed`, follow);
+        }
+    );
+};
 
 export const doesStreamExist = async (username: string): Promise<boolean> => {
     let user: HelixUser | null;

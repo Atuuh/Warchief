@@ -6,7 +6,8 @@
             "request": "launch",
             "name": "Launch Program",
             "runtimeArgs": ["-r", "ts-node/register"],
-            "args": ["${workspaceFolder}/src/index.ts"]
+            "args": ["${workspaceFolder}/src/index.ts"],
+            "smartStep": false
         }
     ]
 }
