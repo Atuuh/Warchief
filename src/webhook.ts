@@ -7,6 +7,7 @@ import WebHookListener, {
     EnvPortAdapter,
 } from "twitch-webhooks";
 import twitch from "twitch";
+import express from "express";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
@@ -30,7 +31,7 @@ const setup = async () => {
         logger: { minLevel: "trace" },
     });
 
-    await listener.listen();
+    // await listener.listen();
 
     console.log("listener", listener);
     console.log(listener["_server"]);
@@ -46,6 +47,14 @@ const setup = async () => {
     );
 
     console.log("subscription", subscription);
+
+    var app = express();
+    app.post("/:id", (req, res) => {
+        console.log("Express request", req);
+    });
+    app.listen(Number(process.env.PORT), () =>
+        console.log("Express is listening")
+    );
 };
 
 setup();
