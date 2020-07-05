@@ -1,30 +1,19 @@
-import discord, { Channel, TextChannel } from "discord.js";
+require("dotenv").config();
+
+import discord from "discord.js";
 import { User } from "./data/user";
 import { connect, getUserRepository } from "./database";
+import { parseCommand } from "./commands";
 
 const client = new discord.Client();
-
-require("dotenv").config();
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user?.tag}`);
 });
 
 client.on("message", async (msg) => {
-    if (msg.content === "ping") {
-        msg.reply("Pong");
-    } else if (msg.content === "report") {
-        const repo = getUserRepository();
-        const users = await repo.find();
-
-        const mappedUsers = users.map((u) => u.firstName);
-
-        msg.reply(
-            `There are ${
-                users.length
-            } users with the following names: ${mappedUsers.join(", ")}`
-        );
-    }
+    const command = parseCommand(msg);
+    if (command) command();
 });
 
 const start = async () => {
