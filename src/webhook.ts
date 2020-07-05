@@ -6,7 +6,6 @@ import WebHookListener, {
     SimpleAdapter,
 } from "twitch-webhooks";
 import twitch from "twitch";
-import address from "address";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
@@ -22,7 +21,7 @@ const setup = async () => {
     );
 
     const adapter = new SimpleAdapter({
-        hostName: address.ip(),
+        hostName: "https://warchief-discord-bot.herokuapp.com/",
         listenerPort: port,
     });
     console.log("adapter", adapter);
