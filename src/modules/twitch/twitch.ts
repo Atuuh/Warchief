@@ -1,7 +1,6 @@
 import { doesStreamExist } from "../../twitch";
-import { TwitchAlertRepository } from "../../data/twitchAlert";
 import { createCommand } from "../../command";
-import { getCustomRepository } from "typeorm";
+import { getTwitchAlertRepository } from "../../database";
 
 export const twitchCommand = createCommand(
     "twitch",
@@ -10,7 +9,7 @@ export const twitchCommand = createCommand(
 
         const [subcommand, streamName] = params;
 
-        const alertRepo = await getCustomRepository(TwitchAlertRepository);
+        const alertRepo = await getTwitchAlertRepository();
 
         switch (subcommand) {
             case "add":

@@ -1,21 +1,18 @@
 import { Connection, createConnection } from "typeorm";
-import { User } from "./data/user";
-import { TwitchAlert } from "./data/twitchAlert";
+import { TwitchAlertRepository } from "./data/twitchAlert";
 
 let connection: Connection;
 
-export const connect = async (database: string): Promise<void> => {
+export const connect = async (database: string) => {
     connection = await createConnection({
         type: "postgres",
         url: database,
-        entities: [__dirname + "/data/*.ts"],
+        entities: [__dirname + "/data/*.{ts,js}"],
         synchronize: true,
     });
 };
 
 export const connected = (): boolean => typeof connection !== "undefined";
 
-export const getUserRepository = () => connection.getRepository(User);
-
 export const getTwitchAlertRepository = () =>
-    connection.getRepository(TwitchAlert);
+    connection.getCustomRepository(TwitchAlertRepository);
