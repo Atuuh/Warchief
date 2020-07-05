@@ -26,6 +26,7 @@ const setup = async () => {
         listenerPort: port,
     });
     console.log("adapter", adapter);
+
     const listener = new WebHookListener(twitchClient, adapter, {
         logger: { minLevel: "trace" },
     });
