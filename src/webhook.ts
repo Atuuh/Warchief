@@ -26,7 +26,6 @@ const setup = async () => {
 
     const adapter = new EnvPortAdapter({
         hostName: "warchief-discord-bot.herokuapp.com",
-        ssl: false,
     });
 
     const listener = new WebHookListener(twitchClient, adapter, {
@@ -41,18 +40,6 @@ const setup = async () => {
             console.log(`Follow changed`, follow);
         }
     );
-
-    const app = express();
-
-    listener.applyMiddleware(app);
-
-    listener.listen();
-
-    app.use((req, res) => {
-        console.log("EXPRESS", req);
-    });
-
-    console.log("SUBSCRIPTION", subscription["_client"]["_server"]);
 };
 
 setup();
