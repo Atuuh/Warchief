@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-import discord from "discord.js";
+import discord, { Channel, TextChannel } from "discord.js";
 import { connect } from "./database";
 import { parseCommand } from "./commands";
 import { setup } from "./twitch";
@@ -24,5 +24,15 @@ const start = async () => {
 
     await setup();
 };
+
+export const sendMessage = async (message: string) => {
+    const channel = await client.channels.fetch("410111956830388234");
+    if (isTextChannel(channel)) {
+        await channel.send(message);
+    }
+};
+
+const isTextChannel = <T extends Channel>(channel: T): channel is TextChannel =>
+    channel.type === "text";
 
 start();

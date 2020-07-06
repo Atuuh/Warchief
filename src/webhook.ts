@@ -3,6 +3,7 @@ require("dotenv").config();
 import WebHookListener, { EnvPortAdapter } from "twitch-webhooks";
 import twitch from "twitch";
 import express from "express";
+import { sendMessage } from ".";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
@@ -29,13 +30,14 @@ const setup = async () => {
 
     listener.applyMiddleware(server);
 
-    const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
+    const dunnykin = await twitchClient.helix.users.getUserByName("dunnykin");
 
-    const subscription = await listener.subscribeToFollowsFromUser(
-        atuuh?.id || "",
+    const subscription = await listener.subscribeToFollowsToUser(
+        dunnykin?.id || "",
         async (follow) => {
-            console.log(`Follow changed`, follow);
-            listener.unlisten();
+            await sendMessage(
+                `${follow.followedUserDisplayName} is now following ${follow.userDisplayName}!`
+            );
         }
     );
 
