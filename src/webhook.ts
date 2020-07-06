@@ -34,6 +34,7 @@ const setup = async () => {
         atuuh?.id || "",
         async (follow) => {
             console.log(`Follow changed`, follow);
+            listener.unlisten();
         }
     );
 };
