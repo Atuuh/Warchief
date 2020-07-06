@@ -16,8 +16,6 @@ const setup = async () => {
         twitchClientSecret
     );
 
-    await cleanup(twitchClient);
-
     const adapter = new EnvPortAdapter({
         hostName: "warchief-discord-bot.herokuapp.com",
     });
