@@ -36,7 +36,7 @@ const setup = async () => {
         dunnykin?.id || "",
         async (follow) => {
             await sendMessage(
-                `${follow.followedUserDisplayName} is now following ${follow.userDisplayName}!`
+                `${follow.userDisplayName} is now following ${follow.followedUserDisplayName}!`
             );
         }
     );
