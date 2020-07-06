@@ -2,6 +2,7 @@ require("dotenv").config();
 
 import WebHookListener, { EnvPortAdapter } from "twitch-webhooks";
 import twitch from "twitch";
+import express from "express";
 
 const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
 const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
@@ -16,6 +17,8 @@ const setup = async () => {
         twitchClientSecret
     );
 
+    const server = express();
+
     const adapter = new EnvPortAdapter({
         hostName: "warchief-discord-bot.herokuapp.com",
     });
@@ -24,7 +27,7 @@ const setup = async () => {
         logger: { minLevel: "trace" },
     });
 
-    listener.listen();
+    listener.applyMiddleware(server);
 
     const atuuh = await twitchClient.helix.users.getUserByName("atuuh");
 
@@ -35,6 +38,8 @@ const setup = async () => {
             listener.unlisten();
         }
     );
+
+    server.listen(port);
 };
 
 const cleanup = async (client: twitch) => {
