@@ -50,4 +50,8 @@ export class TwitchAlertRepository extends AbstractRepository<TwitchAlert> {
     list(channelId: Snowflake) {
         return this.repository.find({ channelId });
     }
+
+    getAll() {
+        return this.repository.find();
+    }
 }

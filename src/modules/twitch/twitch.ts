@@ -1,6 +1,7 @@
-import { doesStreamExist } from "../../twitch";
+import { doesStreamExist, addStreamGoesLiveSubscription } from "../../twitch";
 import { createCommand } from "../../command";
 import { getTwitchAlertRepository } from "../../database";
+import { defaultTwitchAlert } from "../../app";
 
 export const twitchCommand = createCommand(
     "twitch",
@@ -34,6 +35,11 @@ export const twitchCommand = createCommand(
                     );
                     return;
                 }
+
+                addStreamGoesLiveSubscription(
+                    streamName,
+                    defaultTwitchAlert(response.channelId)
+                );
 
                 await message.reply(`Added twitch alert for ${streamName}`);
                 break;
