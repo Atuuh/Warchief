@@ -6,8 +6,7 @@
         "start": "ts-node ./src/index.ts",
         "start:prod": "node build/index.js",
         "build": "rimraf ./build && tsc",
-        "postinstall": "npm run build",
-        "webhook": "node build/webhook.js"
+        "postinstall": "npm run build"
     },
     "repository": {
         "type": "git",
