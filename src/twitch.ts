@@ -4,13 +4,7 @@ import WebHookListener, {
     ReverseProxyAdapter,
     Subscription,
 } from "twitch-webhooks";
-
-require("dotenv").config();
-
-const twitchClientId = process.env.TWITCH_CLIENT_ID || "";
-const twitchClientSecret = process.env.TWITCH_CLIENT_SECRET || "";
-const hostName = process.env.HOSTNAME || "d065809335c6.ngrok.io";
-const port = Number(process.env.PORT);
+import { config } from "./config";
 
 let twitchClient: TwitchClient;
 let webHookListener: WebHookListener;
@@ -21,13 +15,13 @@ const subscriptions: Map<string, Subscription> = new Map<
 
 export const setup = async (server: ConnectCompatibleApp) => {
     twitchClient = TwitchClient.withClientCredentials(
-        twitchClientId,
-        twitchClientSecret
+        config.twitchClientID,
+        config.twitchClientSecret
     );
 
     const adapter = new ReverseProxyAdapter({
-        hostName,
-        listenerPort: port,
+        hostName: config.hostname,
+        listenerPort: config.port,
         pathPrefix: "twitch",
     });
 

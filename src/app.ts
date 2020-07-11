@@ -9,21 +9,20 @@ import { setup as setupDiscord, sendMessage } from "./discord";
 import { connect, getTwitchAlertRepository, disconnect } from "./database";
 import { HelixStream } from "twitch/lib";
 import { Server } from "http";
+import { init } from "./signals";
+import { wakeUpDyno } from "./wakeUpDyno";
+import { config } from "./config";
 
-require("dotenv").config();
-
-const port = Number(process.env.PORT);
-const databaseUrl = process.env.DATABASE_URL || "";
 let server: Server;
 
 export const start = async () => {
     const server = createServer();
 
-    await connect(databaseUrl);
+    await connect(config.databaseUrl);
     await setupDiscord();
     await setupTwitch(server);
 
-    server.listen(port);
+    server.listen(config.port);
 
     const repo = getTwitchAlertRepository();
     const twitchAlerts = await repo.getAll();
@@ -33,17 +32,22 @@ export const start = async () => {
             defaultTwitchAlert(alert.channelId)
         );
     });
+
+    if (isDyno) wakeUpDyno(`https://${config.hostname}`, 0.1);
 };
 
-const cleanup = async () => {
+const isDyno = config.hostname.includes("herokuapp.com");
+
+const shutdown = init(() => async () => {
     await cleanupTwitch();
     server.close(() => {
         console.log("Server closed");
     });
     await disconnect();
-};
+});
 
-process.on("SIGTERM", cleanup);
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
 
 export const defaultTwitchAlert = (channelId: string) => (
     stream: HelixStream
