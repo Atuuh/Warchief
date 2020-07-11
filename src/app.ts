@@ -33,7 +33,7 @@ export const start = async () => {
         );
     });
 
-    if (isDyno) wakeUpDyno(`https://${config.hostname}`, 0.1);
+    if (isDyno) wakeUpDyno(`https://${config.hostname}`, 25);
 };
 
 const isDyno = config.hostname.includes("herokuapp.com");
