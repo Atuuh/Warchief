@@ -1,6 +1,7 @@
 import { Client, TextChannel } from "discord.js";
 
 import { parseCommand } from "./commands";
+import { config } from "./config";
 
 let client: Client;
 
@@ -17,7 +18,7 @@ export const setup = () => {
         if (command) command();
     });
 
-    client.login(process.env.DISCORD_BOT_TOKEN);
+    client.login(config.discordBotToken);
 
     return { client, sendMessage };
 };

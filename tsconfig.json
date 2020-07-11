@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
         "lib": ["es6"],
         "allowJs": true,
@@ -12,7 +12,6 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "resolveJsonModule": true,
-        "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "downlevelIteration": true
     }
