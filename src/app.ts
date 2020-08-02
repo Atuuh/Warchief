@@ -1,54 +1,59 @@
-import { createServer } from "./server";
-import {
-    setup as setupTwitch,
-    cleanup as cleanupTwitch,
-    addStreamGoesLiveSubscription,
-} from "./twitch";
-import { setup as setupDiscord, sendMessage } from "./discord";
+import { setup as setupDiscord, DiscordClient } from "./discord";
 
-import { connect, getTwitchAlertRepository, disconnect } from "./database";
-import { HelixStream } from "twitch/lib";
+import { connect } from "./database";
 import { Server } from "http";
-import { init } from "./signals";
 import { wakeUpDyno } from "./wakeUpDyno";
 import { config } from "./config";
+import { TwitchService } from "./services/twitch.service";
+import { Module, RegisterableModule } from "./module";
+import { Connection } from "typeorm";
+import express, { Application } from "express";
 
-let server: Server;
+export class App {
+    public static create = async (): Promise<App> => {
+        const webApp = express();
+        const server = webApp.listen(config.port);
+        const database = await connect(config.databaseUrl);
 
-export const start = async () => {
-    const server = createServer();
-
-    await connect(config.databaseUrl);
-    await setupDiscord();
-    await setupTwitch(server);
-
-    server.listen(config.port);
-
-    const repo = getTwitchAlertRepository();
-    const twitchAlerts = await repo.getAll();
-    twitchAlerts.map((alert) => {
-        addStreamGoesLiveSubscription(
-            alert.streamerName,
-            defaultTwitchAlert(alert.channelId)
+        const twitchService = new TwitchService(
+            {
+                clientID: config.twitchClientID,
+                clientSecret: config.twitchClientSecret,
+                hostName: config.hostname,
+                port: config.port,
+                path: "twitch",
+            },
+            webApp
         );
-    });
 
-    if (isDyno) wakeUpDyno(`https://${config.hostname}`, 25);
-};
+        const discordClient = await setupDiscord().client;
 
-const isDyno = config.hostname.includes("herokuapp.com");
+        return new App(webApp, server, database, twitchService, discordClient);
+    };
 
-const shutdown = init(() => async () => {
-    await cleanupTwitch();
-    server.close(() => {
-        console.log("Server closed");
-    });
-    await disconnect();
-});
+    private modules: Module[] = [];
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+    private constructor(
+        public webApp: Application,
+        public server: Server,
+        public database: Connection,
+        public twitchService: TwitchService,
+        public discordClient: DiscordClient
+    ) {
+        if (isDyno) {
+            wakeUpDyno(`https://${config.hostname}`, 25);
+        }
+    }
 
-export const defaultTwitchAlert = (channelId: string) => (
-    stream: HelixStream
-) => sendMessage(channelId, `${stream.userDisplayName} has just gone live!`);
+    public async registerModule(moduleType: RegisterableModule): Promise<void> {
+        const module = await moduleType.register(this);
+        this.modules.push(module);
+    }
+
+    public shutdown = async (): Promise<void> => {
+        await this.server.close();
+        await this.database.close();
+    };
+
+    private isDyno = config.hostname.includes("herokuapp.com");
+}

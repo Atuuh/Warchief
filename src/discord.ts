@@ -5,6 +5,8 @@ import { config } from "./config";
 
 let client: Client;
 
+export type DiscordClient = Client;
+
 export const setup = () => {
     client = new Client();
 

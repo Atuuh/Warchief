@@ -1,8 +1,9 @@
 import { Message } from "discord.js";
 import { pingCommand } from "./modules/ping/ping";
-import { twitchCommand } from "./modules/twitch/twitch";
+import { twitchCommand } from "./modules/twitchAlert/twitch.command";
+import { Command } from "./command";
 
-const commands = [pingCommand, twitchCommand];
+const commands = [pingCommand];
 
 export const parseCommand = (message: Message) => {
     const [commandName, ...params] = message.content.split(/ +/);
@@ -13,3 +14,5 @@ export const parseCommand = (message: Message) => {
 
     return () => command?.execute(params, { message });
 };
+
+export const addCommand = (command: Command) => commands.push(command);

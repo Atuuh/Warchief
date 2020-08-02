@@ -13,7 +13,7 @@ const subscriptions: Map<string, Subscription> = new Map<
     Subscription
 >();
 
-export const setup = async (server: ConnectCompatibleApp) => {
+const setup = async (server: ConnectCompatibleApp) => {
     twitchClient = TwitchClient.withClientCredentials(
         config.twitchClientID,
         config.twitchClientSecret
@@ -32,12 +32,12 @@ export const setup = async (server: ConnectCompatibleApp) => {
     webHookListener.applyMiddleware(server);
 };
 
-export const cleanup = async () => {
+const cleanup = async () => {
     const subs = [...subscriptions].map((s) => s[1].stop());
     await Promise.all(subs);
 };
 
-export const addStreamFollowerSubscription = async (
+const addStreamFollowerSubscription = async (
     userName: string,
     callback: (follow: HelixFollow) => void
 ) => {
@@ -47,7 +47,7 @@ export const addStreamFollowerSubscription = async (
     webHookListener.subscribeToFollowsToUser(user.id, callback);
 };
 
-export const addStreamGoesLiveSubscription = async (
+const addStreamGoesLiveSubscription = async (
     userName: string,
     callback: (stream: HelixStream) => void
 ) => {
@@ -71,11 +71,11 @@ export const addStreamGoesLiveSubscription = async (
     subscriptions.set(userName, subscription);
 };
 
-export const removeStreamGoesLiveSubscription = async (userName: string) => {
+const removeStreamGoesLiveSubscription = async (userName: string) => {
     subscriptions.get(userName)?.stop();
 };
 
-export const doesStreamExist = async (username: string): Promise<boolean> => {
+const doesStreamExist = async (username: string): Promise<boolean> => {
     let user: HelixUser | null;
     try {
         user = await twitchClient.helix.users.getUserByName(username);

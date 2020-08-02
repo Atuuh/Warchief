@@ -1,20 +1,16 @@
 import { Message } from "discord.js";
 
-interface Command {
-    name: string;
-    execute: CommandExecuteFn;
+export abstract class Command {
+    protected constructor(
+        protected context: CommandContext,
+        protected params: string[]
+    ) {}
+    static commandName: string;
+    abstract execute(): Promise<void>;
+    static create(context: CommandContext, params: string[]): Command {
+        throw new Error("Method not implemented.");
+    }
 }
-
-type CommandExecuteFn = (
-    params: string[],
-    context: CommandContext
-) => void | Promise<void>;
-
-interface CommandContext {
+export interface CommandContext {
     message: Message;
 }
-
-export const createCommand = (
-    name: string,
-    handler: CommandExecuteFn
-): Command => ({ name, execute: handler });

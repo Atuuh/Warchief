@@ -24,10 +24,13 @@
         "discord.js": "^12.2.0",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
+        "inversify": "^5.0.1",
         "node-fetch": "^2.6.0",
         "pg": "^8.2.1",
+        "reflect-metadata": "^0.1.13",
         "twitch": "^4.1.2",
         "twitch-webhooks": "^4.1.2",
+        "typedi": "^0.8.0",
         "typeorm": "^0.2.25"
     },
     "devDependencies": {

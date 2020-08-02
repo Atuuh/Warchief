@@ -1,5 +1,4 @@
-import { Connection, createConnection, ConnectionOptionsReader } from "typeorm";
-import { TwitchAlertRepository } from "./data/twitchAlert";
+import { Connection, createConnection } from "typeorm";
 
 let connection: Connection;
 
@@ -10,6 +9,8 @@ export const connect = async (database: string) => {
         entities: [__dirname + "/data/*.{ts,js}"],
         synchronize: true,
     });
+
+    return connection;
 };
 
 export const disconnect = async () => {
@@ -17,6 +18,3 @@ export const disconnect = async () => {
 };
 
 export const connected = (): boolean => typeof connection !== "undefined";
-
-export const getTwitchAlertRepository = () =>
-    connection.getCustomRepository(TwitchAlertRepository);
