@@ -1,17 +1,30 @@
-import { Command, CommandContext } from "../../command";
+import { Command } from "../../command";
+import { Message } from "discord.js";
+import { Module } from "../../module";
 
 export class PingCommand extends Command {
-    static commandName = "ping";
-
-    static create(context: CommandContext, params: string[]): PingCommand {
-        return new PingCommand(context, params);
+    constructor() {
+        super({
+            name: "ping",
+            description: "Test",
+            guildOnly: true,
+        });
     }
 
-    private constructor(context: CommandContext, params: string[]) {
-        super(context, params);
+    async run(msg: Message): Promise<void> {
+        await msg.reply("pong!");
+    }
+}
+
+export class PingModule extends Module {
+    static register = async () => {
+        return new PingModule();
+    };
+
+    private constructor() {
+        super();
+        this.commands = [new PingCommand()];
     }
 
-    async execute(): Promise<void> {
-        await this.context.message.reply(`pong!`);
-    }
+    unregister(): void {}
 }

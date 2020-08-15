@@ -3,11 +3,13 @@ import { Disposable } from "../TwitchGoLiveEvent";
 import { config } from "../config";
 import { Command } from "../command";
 
+type MessageHandler = (message: Message) => Promise<void>;
+
 export class DiscordService implements Disposable {
     private client: Client;
-    private commands: typeof Command[] = [];
+    private handler: MessageHandler | undefined;
 
-    constructor(private app: App) {
+    constructor() {
         this.client = new Client();
 
         this.client.once("ready", () =>
@@ -15,24 +17,16 @@ export class DiscordService implements Disposable {
         );
 
         this.client.on("message", async (msg) => {
-            if (msg.author.bot || msg.channel.type === "dm") return;
-            const command = this.parseCommand(msg);
-            if (command) await command.execute();
+            if (!this.handler || msg.author.bot || msg.channel.type === "dm")
+                return;
+            await this.handler(msg);
         });
 
         this.client.login(config.discordBotToken);
     }
 
-    parseCommand(message: Message): Command | null {
-        const [commandName, ...params] = message.content.split(/ +/);
-
-        if (commandName.charAt(0) !== "!") return null;
-
-        const command = this.commands.find(
-            (c) => c.commandName === commandName.slice(1)
-        );
-
-        return command ? command.create({ message }, params) : null;
+    onMessage(handler: (message: Message) => Promise<void>) {
+        this.handler = handler;
     }
 
     dispose(): void {

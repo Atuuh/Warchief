@@ -1,29 +1,27 @@
 import { TwitchService } from "../../services/twitch.service";
 import { TwitchAlertRepository, TwitchAlert } from "../../data/twitchAlert";
 import { TextChannel } from "discord.js";
-import { CommandModule, RegisterableModule } from "../../module";
 import { DomainError } from "../../core/domainError";
 import { Result } from "../../core/result";
 import { Either, left, right } from "../../core/either";
 import { AppError } from "../../core/appError";
 import { Command } from "../../command";
-import { addCommand } from "../../commands";
 import { App } from "../../app";
-import { Service } from "typedi";
+import { Module } from "../../module";
+import { TwitchAlertCommand } from "./twitch.command";
 
 type TwitchAlertNoId = Omit<TwitchAlert, "id">;
 
-@Service()
-export class TwitchAlertModule implements CommandModule {
+export class TwitchAlertModule extends Module {
     static register = async ({
         twitchService,
-        discordClient,
+        discordService,
         database,
     }: App) => {
         const repo = database.getCustomRepository(TwitchAlertRepository);
         const module = new TwitchAlertModule(
             twitchService,
-            discordClient,
+            discordService,
             repo
         );
 
@@ -39,15 +37,15 @@ export class TwitchAlertModule implements CommandModule {
         return module;
     };
 
-    public command: Command;
+    public commands: Command[];
 
     private constructor(
-        private _twitchService: TwitchService,
-        private _discordService: any,
-        private _twitchAlertRepo: TwitchAlertRepository
+        private readonly _twitchService: TwitchService,
+        private readonly _discordService: any,
+        private readonly _repo: TwitchAlertRepository
     ) {
-        this.command = twitchCommand(this);
-        addCommand(this.command);
+        super();
+        this.commands = [new TwitchAlertCommand(this)];
     }
 
     onStreamGoneLive = async (alert: TwitchAlert) => {
@@ -74,10 +72,7 @@ export class TwitchAlertModule implements CommandModule {
         }
 
         try {
-            const alert = await this._twitchAlertRepo.add(
-                streamerName,
-                channelId
-            );
+            const alert = await this._repo.add(streamerName, channelId);
 
             if (!alert) {
                 return left(
@@ -101,10 +96,7 @@ export class TwitchAlertModule implements CommandModule {
         channelId,
     }: TwitchAlertNoId): Promise<RemoveAlertResponse> => {
         try {
-            const result = await this._twitchAlertRepo.remove(
-                streamerName,
-                channelId
-            );
+            const result = await this._repo.remove(streamerName, channelId);
             if (result) return right(Result.ok());
             else
                 return left(
@@ -116,7 +108,7 @@ export class TwitchAlertModule implements CommandModule {
     };
 
     list = async (channelId: string) => {
-        const alerts = await this._twitchAlertRepo.list(channelId);
+        const alerts = await this._repo.list(channelId);
 
         return right(Result.ok(alerts));
     };

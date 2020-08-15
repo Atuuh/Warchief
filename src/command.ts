@@ -1,16 +1,17 @@
 import { Message } from "discord.js";
 
-export abstract class Command {
-    protected constructor(
-        protected context: CommandContext,
-        protected params: string[]
-    ) {}
-    static commandName: string;
-    abstract execute(): Promise<void>;
-    static create(context: CommandContext, params: string[]): Command {
-        throw new Error("Method not implemented.");
-    }
+interface CommandOptions {
+    name: string;
+    description: string;
+    guildOnly: boolean;
 }
-export interface CommandContext {
-    message: Message;
+
+export abstract class Command {
+    protected constructor(public readonly options: CommandOptions) {}
+
+    async hasPermission(msg: Message): Promise<boolean> {
+        return true;
+    }
+
+    abstract async run(msg: Message, args?: object): Promise<unknown>;
 }

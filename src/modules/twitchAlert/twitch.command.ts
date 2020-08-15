@@ -1,33 +1,32 @@
+import { Command } from "../../command";
+import { Message } from "discord.js";
 import { TwitchAlertModule } from "./twitchAlert";
-import { Command, CommandContext } from "../../command";
-import { injectable } from "inversify";
 
-@injectable()
 export class TwitchAlertCommand extends Command {
-    static commandName = "twitch";
+    private readonly module: TwitchAlertModule;
 
-    static create(
-        context: CommandContext,
-        params: string[]
-    ): TwitchAlertCommand {
-        return new TwitchAlertCommand(context, params);
+    public constructor(module: TwitchAlertModule) {
+        super({
+            name: "twitch",
+            description:
+                "Add an alert to this channel when the specified channel goes live",
+            guildOnly: true,
+        });
+        this.module = module;
     }
 
-    private constructor(context: CommandContext, params: string[]) {
-        super(context, params);
+    async hasPermission(msg: Message) {
+        return msg.member?.hasPermission("ADMINISTRATOR") || false;
     }
 
-    async execute(): Promise<void> {
-        const { message } = this.context;
-        if (!message.member?.hasPermission("ADMINISTRATOR")) return;
-
-        const [subcommand, streamerName] = this.params;
+    async run(message: Message, args: string[]): Promise<void> {
+        const [subcommand, streamerName] = args;
 
         switch (subcommand) {
             case "add":
                 if (!streamerName) return;
 
-                const response = await module.addAlert({
+                const response = await this.module.addAlert({
                     streamerName,
                     channelId: message.channel.id,
                 });
@@ -46,7 +45,7 @@ export class TwitchAlertCommand extends Command {
             case "remove":
                 if (!streamerName) return;
 
-                const result = await module.removeAlert({
+                const result = await this.module.removeAlert({
                     streamerName,
                     channelId: message.channel.id,
                 });
@@ -62,7 +61,7 @@ export class TwitchAlertCommand extends Command {
                 break;
 
             case "list":
-                const r = await module.list(message.channel.id);
+                const r = await this.module.list(message.channel.id);
                 if (r.isRight()) {
                     const formattedAlerts = r.value
                         .getValue()
