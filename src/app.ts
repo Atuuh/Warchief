@@ -2,15 +2,15 @@ import { connect } from "./database";
 import { Server } from "http";
 import { wakeUpDyno } from "./wakeUpDyno";
 import { config } from "./config";
-import { TwitchService } from "./services/twitch.service";
-import { Module, RegisterableModule } from "./module";
+import { TwitchService } from "./services/twitchService";
+import { Module, RegisterableModule } from "./core/module";
 import { Connection } from "typeorm";
 import express, { Application } from "express";
-import { TwitchAlertModule } from "./modules/twitchAlert/twitchAlert";
-import { Command } from "./command";
-import { DiscordService } from "./services/discord.service";
+import { TwitchAlertModule } from "./modules/twitchAlert/twitchAlertModule";
+import { Command } from "./core/command";
+import { DiscordService } from "./services/discordService";
 import { Message } from "discord.js";
-import { PingModule } from "./modules/ping/ping";
+import { PingModule } from "./modules/ping/pingModule";
 
 export class App {
     public static create = async (): Promise<App> => {

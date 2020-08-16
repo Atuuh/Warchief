@@ -1,5 +1,5 @@
 import { App } from "./app";
-import { TwitchAlertModule } from "./modules/twitchAlert/twitchAlert";
+import { TwitchAlertModule } from "./modules/twitchAlert/twitchAlertModule";
 import "reflect-metadata";
 
 (async () => {

@@ -1,6 +1,6 @@
-import { Command } from "../../command";
+import { Command } from "../../core/command";
 import { Message } from "discord.js";
-import { TwitchAlertModule } from "./twitchAlert";
+import { TwitchAlertModule } from "./twitchAlertModule";
 
 export class TwitchAlertCommand extends Command {
     private readonly module: TwitchAlertModule;
