@@ -30,6 +30,10 @@ export class TwitchAlertRepository extends AbstractRepository<TwitchAlert> {
         return this.repository.findOne({ where: { streamerName, channelId } });
     }
 
+    async findAll(streamerName: string): Promise<TwitchAlert[]> {
+        return await this.repository.find({ where: { streamerName } });
+    }
+
     async add(streamerName: string, channelId: Snowflake) {
         const existingAlert = await this.find(streamerName, channelId);
         if (existingAlert) return;

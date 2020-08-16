@@ -67,6 +67,8 @@ export class TwitchService implements Disposable {
         userName: string,
         callback: (stream: HelixStream) => void
     ) => {
+        if (this._subscriptions.has(userName)) return;
+
         let user = await this._twitchClient.helix.users.getUserByName(userName);
         if (!user) return null;
 

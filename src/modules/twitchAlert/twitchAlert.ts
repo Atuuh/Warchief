@@ -10,6 +10,7 @@ import { App } from "../../app";
 import { Module } from "../../module";
 import { TwitchAlertCommand } from "./twitch.command";
 import { DiscordService } from "../../services/discord.service";
+import { HelixStream } from "twitch/lib";
 
 type TwitchAlertNoId = Omit<TwitchAlert, "id">;
 
@@ -27,13 +28,22 @@ export class TwitchAlertModule extends Module {
         );
 
         const existingAlerts = await repo.getAll();
+        console.info(
+            `TwitchAlertModule: Registering ${existingAlerts.length} existing alerts`
+        );
+
         const alerts = existingAlerts.map((alert) =>
             twitchService.addStreamGoesLiveSubscription(
                 alert.streamerName,
-                () => module.onStreamGoneLive(alert)
+                module.handleStreamGoneLive
             )
         );
+        console.info(
+            `TwitchAlertModule: Collected webhook subscription promises`
+        );
+
         await Promise.all(alerts);
+        console.info(`TwitchAlertModule: All existing alerts set up`);
 
         return module;
     };
@@ -48,6 +58,12 @@ export class TwitchAlertModule extends Module {
         super();
         this.commands = [new TwitchAlertCommand(this)];
     }
+
+    handleStreamGoneLive = async (stream: HelixStream) => {
+        const alerts = await this._repo.findAll(stream.userDisplayName);
+        const notifications = alerts.map(this.onStreamGoneLive);
+        await Promise.all(notifications);
+    };
 
     onStreamGoneLive = async (alert: TwitchAlert) => {
         const channel = (await this._discordService.getChannel(
@@ -83,7 +99,7 @@ export class TwitchAlertModule extends Module {
 
             this._twitchService.addStreamGoesLiveSubscription(
                 streamerName,
-                () => this.onStreamGoneLive(alert)
+                this.handleStreamGoneLive
             );
         } catch (err) {
             return left(AppError.UnexpectedError.create(err));
