@@ -1,12 +1,11 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, TextChannel, Channel } from "discord.js";
 import { Disposable } from "../TwitchGoLiveEvent";
 import { config } from "../config";
-import { Command } from "../command";
 
 type MessageHandler = (message: Message) => Promise<void>;
 
 export class DiscordService implements Disposable {
-    private client: Client;
+    public client: Client;
     private handler: MessageHandler | undefined;
 
     constructor() {
@@ -27,6 +26,10 @@ export class DiscordService implements Disposable {
 
     onMessage(handler: (message: Message) => Promise<void>) {
         this.handler = handler;
+    }
+
+    async getChannel(channelID: string): Promise<Channel> {
+        return await this.client.channels.fetch(channelID);
     }
 
     dispose(): void {

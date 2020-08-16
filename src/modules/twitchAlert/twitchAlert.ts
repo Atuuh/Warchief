@@ -9,6 +9,7 @@ import { Command } from "../../command";
 import { App } from "../../app";
 import { Module } from "../../module";
 import { TwitchAlertCommand } from "./twitch.command";
+import { DiscordService } from "../../services/discord.service";
 
 type TwitchAlertNoId = Omit<TwitchAlert, "id">;
 
@@ -41,7 +42,7 @@ export class TwitchAlertModule extends Module {
 
     private constructor(
         private readonly _twitchService: TwitchService,
-        private readonly _discordService: any,
+        private readonly _discordService: DiscordService,
         private readonly _repo: TwitchAlertRepository
     ) {
         super();
@@ -49,7 +50,7 @@ export class TwitchAlertModule extends Module {
     }
 
     onStreamGoneLive = async (alert: TwitchAlert) => {
-        const channel = (await this._discordService.channels.fetch(
+        const channel = (await this._discordService.getChannel(
             alert.channelId
         )) as TextChannel;
 
