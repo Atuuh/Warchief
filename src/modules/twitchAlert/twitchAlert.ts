@@ -35,7 +35,7 @@ export class TwitchAlertModule extends Module {
         const alerts = existingAlerts.map((alert) =>
             twitchService.addStreamGoesLiveSubscription(
                 alert.streamerName,
-                module.handleStreamGoneLive
+                (stream) => module.handleStreamGoneLive(stream)
             )
         );
         console.info(
@@ -60,6 +60,9 @@ export class TwitchAlertModule extends Module {
     }
 
     handleStreamGoneLive = async (stream: HelixStream) => {
+        console.info(
+            `TwitchAlert: Handling ${stream.userDisplayName} going live`
+        );
         const alerts = await this._repo.findAll(stream.userDisplayName);
         const notifications = alerts.map(this.onStreamGoneLive);
         await Promise.all(notifications);

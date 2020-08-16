@@ -79,10 +79,11 @@ export class TwitchService implements Disposable {
         const subscription = await this._wehhookListener.subscribeToStreamChanges(
             user.id,
             (stream) => {
-                console.log(
+                console.info(
                     `TwitchService: Received event from webhook for ${user?.displayName}`
                 );
                 if (!previousStream && stream) {
+                    console.info(`TwitchService: ${user?.displayName}`);
                     callback(stream);
                 }
                 previousStream = stream || null;
