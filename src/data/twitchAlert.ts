@@ -4,15 +4,27 @@ import {
     Entity,
     EntityRepository,
     AbstractRepository,
+    ValueTransformer,
 } from "typeorm";
 import { Snowflake } from "discord.js";
+
+class LowercaseTransformer implements ValueTransformer {
+    to(value: string): string {
+        return value.toLowerCase();
+    }
+    from(value: string): string {
+        return value.toLowerCase();
+    }
+}
 
 @Entity()
 export class TwitchAlert {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({
+        transformer: new LowercaseTransformer(),
+    })
     streamerName!: string;
 
     @Column()

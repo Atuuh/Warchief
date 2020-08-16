@@ -73,6 +73,9 @@ export class TwitchAlertModule extends Module {
         const everyoneRole = channel.guild.roles.everyone;
         const message = `Hey ${everyoneRole}, ${alert.streamerName} is going live! Go say hello at https://www.twitch.tv/${alert.streamerName}`;
 
+        console.info(
+            `TwitchAlertModule: Sending alert for twitch channel ${alert.streamerName} to channel id ${channel.id}`
+        );
         channel.send(message);
     };
 
