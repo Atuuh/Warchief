@@ -1,16 +1,19 @@
-import { TwitchService } from "../../services/twitchService";
-import { TwitchAlertRepository, TwitchAlert } from "./twitchAlertRepo";
 import { TextChannel } from "discord.js";
-import { DomainError } from "../../core/domainError";
-import { Result } from "../../core/result";
-import { Either, left, right } from "../../core/either";
-import { AppError } from "../../core/appError";
-import { Command } from "../../core/command";
+import { HelixStream } from "twitch";
+
+import { TwitchAlert, TwitchAlertRepository, TwitchAlertCommand } from ".";
 import { App } from "../../app";
-import { Module } from "../../core/module";
-import { TwitchAlertCommand } from "./twitchCommand";
-import { DiscordService } from "../../services/discordService";
-import { HelixStream } from "twitch/lib";
+import {
+    Command,
+    left,
+    AppError,
+    right,
+    Result,
+    Either,
+    DomainError,
+    Module,
+} from "../../core";
+import { TwitchService, DiscordService } from "../../services";
 
 type TwitchAlertNoId = Omit<TwitchAlert, "id">;
 

@@ -1,5 +1,5 @@
-import { Module } from "../../core/module";
-import { PingCommand } from "./pingCommand";
+import { PingCommand } from ".";
+import { Module } from "../../core";
 
 export class PingModule extends Module {
     static register = async () => {

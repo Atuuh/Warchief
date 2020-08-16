@@ -1,5 +1,6 @@
-import { Command } from "../../core/command";
 import { Message } from "discord.js";
+
+import { Command } from "../../core";
 
 export class PingCommand extends Command {
     constructor() {

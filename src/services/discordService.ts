@@ -1,6 +1,7 @@
 import { Client, Message, Channel } from "discord.js";
+
 import { config } from "../config";
-import { Disposable } from "../core/disposable";
+import { Disposable } from "../core";
 
 type MessageHandler = (message: Message) => Promise<void>;
 

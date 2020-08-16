@@ -1,20 +1,20 @@
-import { connect } from "./database";
-import { Server } from "http";
-import { wakeUpDyno } from "./wakeUpDyno";
-import { config } from "./config";
-import { TwitchService } from "./services/twitchService";
-import { Module, RegisterableModule } from "./core/module";
-import { Connection } from "typeorm";
-import express, { Application } from "express";
-import { TwitchAlertModule } from "./modules/twitchAlert/twitchAlertModule";
-import { Command } from "./core/command";
-import { DiscordService } from "./services/discordService";
 import { Message } from "discord.js";
-import { PingModule } from "./modules/ping/pingModule";
+import { Application } from "express";
+import { Server } from "http";
+import { Connection } from "typeorm";
+
+import { config } from "./config";
+import { Command, RegisterableModule, Module } from "./core";
+import { connect } from "./database";
+import { PingModule } from "./modules/ping";
+import { TwitchAlertModule } from "./modules/twitchAlert";
+import { createServer } from "./server";
+import { TwitchService, DiscordService } from "./services";
+import { wakeUpDyno } from "./wakeUpDyno";
 
 export class App {
     public static create = async (): Promise<App> => {
-        const webApp = express();
+        const webApp = createServer();
         const server = webApp.listen(config.port);
         const database = await connect(config.databaseUrl);
 
