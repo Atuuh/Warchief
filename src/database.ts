@@ -6,7 +6,7 @@ export const connect = async (database: string) => {
     connection = await createConnection({
         type: "postgres",
         url: database,
-        entities: ["src/modules/**/*.{ts, js}"],
+        entities: [__dirname + "/**/*.{ts, js}"],
         synchronize: true,
     });
 
