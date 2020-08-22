@@ -17,6 +17,12 @@ import { TwitchService, DiscordService } from "../../services";
 
 type TwitchAlertNoId = Omit<TwitchAlert, "id">;
 
+const filterUnique = <T extends unknown>(
+    value: T,
+    index: number,
+    array: T[]
+): boolean => array.indexOf(value) === index;
+
 export class TwitchAlertModule extends Module {
     static register = async ({
         twitchService,
@@ -30,15 +36,17 @@ export class TwitchAlertModule extends Module {
             repo
         );
 
-        const existingAlerts = await repo.getAll();
+        const existingAlerts = (await repo.getAll())
+            .map((alert) => alert.streamerName)
+            .filter(filterUnique);
+
         console.info(
             `TwitchAlertModule: Registering ${existingAlerts.length} existing alerts`
         );
 
         const alerts = existingAlerts.map((alert) =>
-            twitchService.addStreamGoesLiveSubscription(
-                alert.streamerName,
-                (stream) => module.handleStreamGoneLive(stream)
+            twitchService.addStreamGoesLiveSubscription(alert, (stream) =>
+                module.handleStreamGoneLive(stream)
             )
         );
         console.info(
