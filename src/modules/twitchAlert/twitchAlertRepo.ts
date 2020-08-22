@@ -1,3 +1,4 @@
+import { Snowflake } from "discord.js";
 import {
     PrimaryGeneratedColumn,
     Column,
@@ -6,7 +7,6 @@ import {
     AbstractRepository,
     ValueTransformer,
 } from "typeorm";
-import { Snowflake } from "discord.js";
 
 class LowercaseTransformer implements ValueTransformer {
     to(value: string): string {

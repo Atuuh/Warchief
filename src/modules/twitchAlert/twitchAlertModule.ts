@@ -1,18 +1,27 @@
-import { TwitchService } from "../../services/twitch.service";
-import { TwitchAlertRepository, TwitchAlert } from "../../data/twitchAlert";
 import { TextChannel } from "discord.js";
-import { DomainError } from "../../core/domainError";
-import { Result } from "../../core/result";
-import { Either, left, right } from "../../core/either";
-import { AppError } from "../../core/appError";
-import { Command } from "../../command";
+import { HelixStream } from "twitch";
+
+import { TwitchAlert, TwitchAlertRepository, TwitchAlertCommand } from ".";
 import { App } from "../../app";
-import { Module } from "../../module";
-import { TwitchAlertCommand } from "./twitch.command";
-import { DiscordService } from "../../services/discord.service";
-import { HelixStream } from "twitch/lib";
+import {
+    Command,
+    left,
+    AppError,
+    right,
+    Result,
+    Either,
+    DomainError,
+    Module,
+} from "../../core";
+import { TwitchService, DiscordService } from "../../services";
 
 type TwitchAlertNoId = Omit<TwitchAlert, "id">;
+
+const filterUnique = <T extends unknown>(
+    value: T,
+    index: number,
+    array: T[]
+): boolean => array.indexOf(value) === index;
 
 export class TwitchAlertModule extends Module {
     static register = async ({
@@ -27,15 +36,17 @@ export class TwitchAlertModule extends Module {
             repo
         );
 
-        const existingAlerts = await repo.getAll();
+        const existingAlerts = (await repo.getAll())
+            .map((alert) => alert.streamerName)
+            .filter(filterUnique);
+
         console.info(
             `TwitchAlertModule: Registering ${existingAlerts.length} existing alerts`
         );
 
         const alerts = existingAlerts.map((alert) =>
-            twitchService.addStreamGoesLiveSubscription(
-                alert.streamerName,
-                (stream) => module.handleStreamGoneLive(stream)
+            twitchService.addStreamGoesLiveSubscription(alert, (stream) =>
+                module.handleStreamGoneLive(stream)
             )
         );
         console.info(

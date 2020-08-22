@@ -1,5 +1,5 @@
 import { Command } from "./command";
-import { App } from "./app";
+import { App } from "../app";
 
 export type RegisterableModule = {
     register: (app: App) => Promise<Module> | Module;
