@@ -4,6 +4,7 @@
         {
             "name": "Launch Program",
             "type": "node",
+            "preLaunchTask": "npm: build",
             "request": "launch",
             "runtimeExecutable": "node",
             "runtimeArgs": ["-r", "ts-node/register"],
