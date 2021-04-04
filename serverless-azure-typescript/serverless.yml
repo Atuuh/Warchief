@@ -1,0 +1,50 @@
+service: atuuh-warchief-bot
+
+frameworkVersion: "2"
+useDotenv: true
+
+custom:
+    webpack:
+        webpackConfig: ./webpack.config.js
+        includeModules:
+            packagePath: "./package.json"
+            forceInclude:
+                - discord-interactions
+
+provider:
+    name: azure
+    region: West US 2
+    runtime: nodejs12
+
+    environment:
+        VARIABLE_FOO: "foo"
+
+plugins:
+    - serverless-azure-functions
+    - serverless-webpack
+
+functions:
+    hello:
+        handler: src/handlers/hello.sayHello
+        events:
+            - http: true
+              methods:
+                  - GET
+              authLevel: anonymous
+
+    goodbye:
+        handler: src/handlers/goodbye.sayGoodbye
+        events:
+            - http: true
+              methods:
+                  - GET
+              authLevel: anonymous
+
+    discord-interaction:
+        handler: src/handlers/discord.interaction
+        events:
+            - http: true
+              methods:
+                  - GET
+                  - POST
+              authLevel: anonymous
